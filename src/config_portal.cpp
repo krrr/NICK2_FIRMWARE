@@ -123,26 +123,7 @@ static const char iro[] PROGMEM =
   "{width:300,height:300,color:\"#fff\",colors:[],padding:6,layoutDirection:\"vertical\",borderColor:\"#fff\",borderWidth:0,handleRadius:8,activeHandleRadius:null,handleSvg:null,handleProps:{x:0,y:0},wheelLightness:!0,wheelAngle:0,wheelDirection:\"anticlockwise\",sliderSize:null,sliderMargin:12,boxHeight:null},{colors:[],display:\"block\",id:null,layout:\"default\",margin:null});var mt,xt,jt,Mt,Ot=(It.prototype=(mt=kt).prototype,Object.assign(It,mt),It.I=mt,It);function It(n,t){var i,r=document.createElement(\"div\");function e(){var t=n instanceof Element?n:document.querySelector(n);t.appendChild(i.base),i.onMount(t)}return function(t,n,i){var r,e,u;m.i&&m.i(t,n),e=(r=i===o)?null:i&&i.n||n.n,t=h(O,null,[t]),u=[],k(n,r?n.n=t:(i||n).n=t,e||x,x,void 0!==n.ownerSVGElement,i&&!r?[i]:e?null:j.slice.call(n.childNodes),u,!1,i||x,r),d(u,t)}(h(mt,Object.assign({},{ref:function(t){return i=t}},t)),r),\"loading\"!==document.readyState?e():document.addEventListener(\"DOMContentLoaded\",e),i}return(jt=xt=xt||{}).version=\"5.5.1\",jt.Color=V,jt.ColorPicker=Ot,(Mt=jt.ui||(jt.ui={})).h=h,Mt.ComponentBase=gt,Mt.Handle=bt,Mt.Slider=pt,Mt.Wheel=wt,Mt.Box=yt,xt});"
   "</script>";
 
-/** Is this an IP? */
-boolean isIp(String str) {
-  for (size_t i = 0; i < str.length(); i++) {
-    int c = str.charAt(i);
-    if (c != '.' && (c < '0' || c > '9')) {
-      return false;
-    }
-  }
-  return true;
-}
 
-/** IP to String? */
-String toStringIp(IPAddress ip) {
-  String res = "";
-  for (int i = 0; i < 3; i++) {
-    res += String((ip >> (8 * i)) & 0xFF) + ".";
-  }
-  res += String(((ip >> 8 * 3)) & 0xFF);
-  return res;
-}
 
 /** Redirect to captive portal if we got a request for another domain. Return true in that case so the page handler do not try to handle the request again. */
 boolean captivePortal() {
@@ -247,9 +228,9 @@ void startConfigPortal() {
 void startServer() {
   httpUpdateServer.setup(&server, update_path, update_username, update_password);
   server.on("/", handleRoot);
-  server.on("/generate_204", handleRoot);  //Android captive portal. Maybe not needed. Might be handled by notFound handler.
-  server.on("/fwlink", handleRoot);  //Microsoft captive portal. Maybe not needed. Might be handled by notFound handler.
-  //server.on("/json", handleJson); // show raw json at given url path
+  server.on("/generate_204", handleRoot);  // Android captive portal. Maybe not needed. Might be handled by notFound handler.
+  server.on("/fwlink", handleRoot);  // Microsoft captive portal. Maybe not needed. Might be handled by notFound handler.
+  server.on("/json", handleJson); // show raw config json
 
   // diyHue
   server.on("/detect", handleDiyHueDetect);
@@ -337,16 +318,15 @@ void handleNotFound() {
 
   server.send(404, "text/html", html);
 }
-/*
-  // Use only for testing => reveals wifi password!
-  void handleJson() {
+
+void handleJson() {
+  auto temp = JsonDocument(json);
+  temp["pass"] = "***";
   String html;
-  serializeJson(json, html);
-
+  serializeJson(temp, html);
   server.send(200, "text/json", html);
+}
 
-  }
-*/
 void handleRoot() {
   unsigned long serverProcessingTime = millis();
 
@@ -478,9 +458,7 @@ void handleRoot() {
       json["dst_hour"] = server.arg("dst_hour");
     }
     saveConfig();
-
   }
-
 
 
   String html = "";
@@ -498,7 +476,6 @@ void handleRoot() {
     /* *** */
     /* WIFI SETTINGS */
     /* *** */
-
     html += "<h2>Network settings</h2> <p>Select your network settings here.</p> <div class=\"row\"> <label for=\"ssid\">WiFi SSID</label> <input type=\"text\" id=\"ssid\" name=\"ssid\" value=\"";
     html += json["ssid"].as<const char*>();
     html += "\"> </div> <div class=\"row\"> <label for=\"pass\">WiFi Password</label> <input type=\"password\" id=\"pass\" name=\"pass\" value=\"";
@@ -1036,16 +1013,14 @@ void handleRoot() {
 
     server.sendContent(""); // this tells web client that transfer is done
 
-  } else {
+  } else {  // set config parameter directly. example: http://192.168.50.109/?wifi_timeout=111
     for (uint8_t i = 0; i < server.args(); i++) {
       html += " " + server.argName(i) + ": " + server.arg(i) + "\n";
     }
     server.send(200, "text/plain", html);
   }
 
-  Serial.print("[SERV] Serving HTML took: ");
-  Serial.print(millis() - serverProcessingTime);
-  Serial.println(" ms");
+  Serial.println("[SERV] Serving HTML took: " + String(millis() - serverProcessingTime) + "ms");
 
   if (server.args() && server.hasArg("is_form")) {
     Serial.print("[SERV] Saved, resetting.");
@@ -1054,5 +1029,4 @@ void handleRoot() {
     ESP.restart();
     delay(100);
   }
-
 }

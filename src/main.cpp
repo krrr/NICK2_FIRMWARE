@@ -303,7 +303,7 @@ NeoPixelBus<NeoGrbFeature, NeoWs2813Method> strip(PIXEL_COUNT);
 #endif
 NeoGamma<NeoGammaTableMethod> colorGamma;
 NeoPixelAnimator animations(PIXEL_COUNT);
-DynamicJsonDocument json(2048); // config buffer
+JsonDocument json; // config buffer
 Ticker fade_animation_ticker;
 Ticker onceTicker;
 Ticker colonTicker;
@@ -399,7 +399,7 @@ void setup() {
     Serial.println("[CONF] No credentials set, going to config mode.");
   }
 
-  Serial.println("[SYS] FreeSketchSpace: " + ESP.getFreeSketchSpace());
+  Serial.println("[SYS] FreeSketchSpace: " + String(ESP.getFreeSketchSpace() / 1024) + "KB");
 
   if (deviceMode == CONFIG_MODE || deviceMode == CONNECTION_FAIL) {
     startConfigPortal(); // Blocking loop

@@ -61,7 +61,7 @@ extern const char* update_username;
 extern const char* update_password;
 extern const char* ntpServerName;
 // global vars
-extern DynamicJsonDocument json;
+extern JsonDocument json;
 extern Ticker fade_animation_ticker;
 extern Ticker onceTicker;
 extern Ticker colonTicker;
@@ -129,6 +129,8 @@ String macToStr(const uint8_t* mac);
 String macLastThreeSegments(const uint8_t* mac);
 bool readConfig();
 bool saveConfig();
+String toStringIp(IPAddress ip);
+boolean isIp(String str);
 //////////////
 
 ////////////// ntp fns
@@ -179,6 +181,7 @@ void handleRoot();
 void handleDiyHueDetect();
 void handleDiyHueSet();
 void handleNotFound();
+void handleJson();
 void handleDiyHueGet();
 
 #endif // GLOBAL_H
