@@ -50,7 +50,7 @@ static const char html_wrapper_end[] PROGMEM =
   "</div>"
   "<div class=\"github\"><p>"
   "{{fw_name}} {{fw_version}}"
-  ", check out <a href=\"https://github.com/mcer12/Nick2-Nixie-Clock\" target=\"_blank\"><strong>NICK2</strong> on GitHub</a></p> </div>"
+  ", check out <a href=\"https://github.com/krrr/NICK2_FIRMWARE\" target=\"_blank\"><strong>NICK2</strong> on GitHub</a></p> </div>"
   "</div>";
 
 static const char html_footer[] PROGMEM =
@@ -682,7 +682,7 @@ void handleRoot() {
 
     html += "<div class=\"row\"><label for=\"cathode\">Cathode poisoning prevention:</label>";
     html += "<select id=\"cathode\" name=\"cathode\">";
-    unsigned int cathode = json["cathode"].as<unsigned int>();
+    int cathode = json["cathode"].as<int>();
     html += "<option value=\"0\"";
     if (cathode == 0) html += " selected";
     html += ">None</option>";
@@ -692,6 +692,9 @@ void handleRoot() {
     html += "<option value=\"2\"";
     if (json["cathode"].isNull() || cathode == 2) html += " selected";
     html += ">10min cycle every hour between 2-6 AM + 60s cycle every hour (recommended)</option>";
+    html += "<option value=\"3\"";
+    if (cathode == 3) html += " selected";
+    html += ">60s cycle every half an hour</option>";
     html += "</select></div>";
 
 

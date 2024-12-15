@@ -336,11 +336,11 @@ void setup() {
 
   WiFi.macAddress(mac);
 
-  const char* ssid = json["ssid"].as<const char*>();
-  const char* pass = json["pass"].as<const char*>();
-  const char* ip = json["ip"].as<const char*>();
-  const char* gw = json["gw"].as<const char*>();
-  const char* sn = json["sn"].as<const char*>();
+  auto ssid = json["ssid"].as<const char*>();
+  auto pass = json["pass"].as<const char*>();
+  auto ip = json["ip"].as<const char*>();
+  auto gw = json["gw"].as<const char*>();
+  auto sn = json["sn"].as<const char*>();
 
   if (ssid != NULL && pass != NULL && ssid[0] != '\0' && pass[0] != '\0') {
     Serial.println("[WIFI] Connecting to: " + String(ssid));
@@ -440,18 +440,19 @@ void loop() {
     prevDisplayMillis = millis();
     toggleNightMode();
 
+    int cathode = json["cathode"].as<int>();
+    auto now_t = now();
     if (
-      (json["cathode"].as<int>() == 1 && (hour() >= 2 && hour() <= 6) && minute() < 10) ||
-      (json["cathode"].as<int>() == 2 && (((hour() >= 2 && hour() <= 6) && minute() < 10) || minute() < 1))
+      (cathode == 1 && (hour(now_t) >= 2 && hour(now_t) <= 6) && minute(now_t) < 10) ||
+      (cathode == 2 && (((hour(now_t) >= 2 && hour(now_t) <= 6) && minute(now_t) < 10) || minute(now_t) < 1)) ||
+      (cathode == 3 && (minute(now_t) < 1 || (minute(now_t) >= 30 && minute(now_t) < 31)))
     ) {
-      healingCycle(); // do healing loop if the time is right :)
+      healingCycle();  // do healing loop if the time is right :)
     } else {
-
       if (timeUpdateStatus) {
         if (timeUpdateStatus == UPDATE_SUCCESS) {
           setTemporaryColonColor(5, green[bri]);
-        }
-        if (timeUpdateStatus == UPDATE_FAIL) {
+        } else if (timeUpdateStatus == UPDATE_FAIL) {
           if (failedAttempts > 2) {
             colonColor = red[bri];
           } else {
@@ -463,7 +464,6 @@ void loop() {
 
       handleColon();
       showTime();
-
     }
 
     //setAllDigitsTo(8);

@@ -318,7 +318,7 @@ void toggleNightMode() {
 }
 
 void healingCycle() {
-  strip.ClearTo(RgbColor(0, 0, 0)); // red
+  strip.ClearTo(RgbColor(0, 0, 0));
   strip.Show();
   for (int i = 0; i < DIGITS_COUNT; i++) {
     setDigit(i, healPattern[i][healIterator]);
