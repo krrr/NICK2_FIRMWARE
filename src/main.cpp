@@ -366,9 +366,14 @@ void setup() {
 
     //startBlinking(200, colorWifiConnecting);
 
-    for (int i = 0; i < 1000; i++) {
+    int wifi_timeout = json["wifi_timeout"].as<int>();
+    if (wifi_timeout < 10 || wifi_timeout > 360) {
+      wifi_timeout = 10;  // defult 20s timeout
+    }
+    wifi_timeout *= 10;
+    for (int i = 0; ; i++) {
       if (WiFi.status() != WL_CONNECTED) {
-        if (i > 200) { // 20s timeout
+        if (i > wifi_timeout) {
           enableDotsAnimation = false;
           deviceMode = CONFIG_MODE;
           updateColonColor(red[bri]);
@@ -382,12 +387,9 @@ void setup() {
         updateColonColor(green[bri]);
         enableDotsAnimation = false;
         strip_show();
-        Serial.print("[WIFI] Successfully connected to: ");
-        Serial.println(WiFi.SSID());
-        Serial.print("[WIFI] Mac address: ");
-        Serial.println(WiFi.macAddress());
-        Serial.print("[WIFI] IP address: ");
-        Serial.println(WiFi.localIP());
+        Serial.println("[WIFI] Successfully connected to: " + WiFi.SSID());
+        Serial.println("[WIFI] Mac address: " + WiFi.macAddress());
+        Serial.println("[WIFI] IP address: " + WiFi.localIP().toString());
         delay(1000);
         break;
       }

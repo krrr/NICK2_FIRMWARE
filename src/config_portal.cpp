@@ -366,6 +366,9 @@ void handleRoot() {
     if (server.hasArg("pass") && server.arg("pass") != "placeholder") {
       json["pass"] = server.arg("pass");
     }
+    if (server.hasArg("wifi_timeout")) {
+      json["wifi_timeout"] = server.arg("wifi_timeout").toInt();
+    }
     /*
       if (server.hasArg("ip")) {
       json["ip"] = server.arg("ip");
@@ -499,10 +502,12 @@ void handleRoot() {
     html += "<h2>Network settings</h2> <p>Select your network settings here.</p> <div class=\"row\"> <label for=\"ssid\">WiFi SSID</label> <input type=\"text\" id=\"ssid\" name=\"ssid\" value=\"";
     html += json["ssid"].as<const char*>();
     html += "\"> </div> <div class=\"row\"> <label for=\"pass\">WiFi Password</label> <input type=\"password\" id=\"pass\" name=\"pass\" value=\"";
-    const char* pass = json["pass"].as<const char*>();
-    if (pass != NULL && pass[0] != '\0') {
-      html += "placeholder";
-    }
+    auto pass = json["pass"].as<const char*>();
+    if (pass != NULL && pass[0] != '\0') html += "placeholder";
+    html += "\"><div class=\"row\"> <label for=\"ssid\">Connect Timeout (s)</label> <input type=\"number\" id=\"wifi_timeout\" name=\"wifi_timeout\" min=\"10\" max=\"360\" value=\"";
+    int wifi_timeout = json["wifi_timeout"].as<int>();
+    if (wifi_timeout == 0) wifi_timeout = 20;
+    html += String(wifi_timeout) + "\"> </div>";
     /*
         html += "\"> </div> <h2>Static IP settings (optional)</h2> <p>Optional settings for static IP, in some cases this might speed up response time. All 3 need to be set and IP should be reserved in router's DHCP settings.";
         html += "<br>MAC address: <span class=\"mac\">";
@@ -515,7 +520,6 @@ void handleRoot() {
         html += "\"> </div> <div class=\"row\"> <label for=\"sn\">Subnet mask (optional):</label> <input type=\"text\" id=\"sn\" name=\"sn\" value=\"";
         html += json["sn"].as<const char*>();
     */
-    html += "\"> </div>";
 
     /* *** */
     /* BASIC SETTINGS */
