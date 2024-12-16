@@ -53,6 +53,8 @@
 #endif
 #define MINIMAL_CROSSFADE_BRIGHTNESS 8 // crossfade will be disabled below this brightness because there's not enough steps for smooth transition
 #define PIXEL_COUNT 14 // Addressable LED count
+#define BYTES_TO_SHIFT 8 // we have 60 outputs, 60 / 8 = 8 bytes
+#define HEALING_CYCLE_TIMES_A_SECOND 10
 
 // User global vars
 extern const char* dns_name;
@@ -82,7 +84,6 @@ extern HsbColor purple[];
 extern HsbColor azure[];
 extern HsbColor colonColorDefault[];
 extern RgbColor currentColor;
-extern const uint8_t bytesToShift;
 extern const uint8_t digitPins[DIGITS_COUNT][CATHODE_COUNT];
 extern Timezone TZ;
 #if defined(CLOCK_VERSION_IN16)
@@ -103,23 +104,22 @@ extern uint8_t healPattern[6][10];
 extern uint8_t bri_vals_separate[3][6];
 extern volatile bool isPoweredOn;
 extern unsigned long configStartMillis, prevDisplayMillis;
-extern volatile int activeDot;
+// extern volatile int activeDot;
 extern uint8_t deviceMode;
 extern bool timeUpdateFirst;
 extern volatile bool toggleSeconds;
-extern bool breatheState;
+// extern bool breatheState;
 extern byte mac[];
-extern volatile int dutyState;
+// extern volatile int dutyState;
 extern volatile byte bytes[];
 extern volatile byte prevBytes[];
 extern volatile uint8_t bri;
 extern volatile int crossFadeTime;
 extern volatile uint8_t fadeIterator;
-extern uint8_t healIterator;
 extern uint8_t timeUpdateStatus;
 extern uint8_t failedAttempts;
 extern volatile bool enableDotsAnimation;
-extern volatile unsigned short dotsAnimationState;
+// extern volatile unsigned short dotsAnimationState;
 extern RgbColor colonColor;
 extern IPAddress ip_addr;
 //////////////

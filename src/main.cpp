@@ -92,7 +92,6 @@ RgbColor currentColor = RgbColor(0, 0, 0);
 // MAX6921 has 20 outputs, we have 3 of them,
 // closest to that is 64 (8x8)
 #if defined(CLOCK_VERSION_IN16)
-const uint8_t bytesToShift = 8; // we have 60 outputs, 60 / 8 = 8 bytes
 const uint8_t digitPins[DIGITS_COUNT][CATHODE_COUNT] = {
   {
     14,  //0
@@ -272,24 +271,23 @@ uint8_t bri_vals_separate[3][6] = {
 // Better left alone global vars
 volatile bool isPoweredOn = true;
 unsigned long configStartMillis, prevDisplayMillis;
-volatile int activeDot;
+// volatile int activeDot;
 uint8_t deviceMode = NORMAL_MODE;
 bool timeUpdateFirst = true;
 volatile bool toggleSeconds;
-bool breatheState;
+// bool breatheState;
 byte mac[6];
-volatile int dutyState = 0;
+// volatile int dutyState = 0;
 //volatile uint8_t digitsCache[] = {0, 0, 0, 0};
-volatile byte bytes[bytesToShift];
-volatile byte prevBytes[bytesToShift];
+volatile byte bytes[BYTES_TO_SHIFT];
+// volatile byte prevBytes[BYTES_TO_SHIFT];
 volatile uint8_t bri = 0;
 volatile int crossFadeTime = 0;
 volatile uint8_t fadeIterator;
-uint8_t healIterator;
 uint8_t timeUpdateStatus = 0; // 0 = no update, 1 = update success, 2 = update fail,
 uint8_t failedAttempts = 0;
 volatile bool enableDotsAnimation;
-volatile unsigned short dotsAnimationState;
+// volatile unsigned short dotsAnimationState;
 RgbColor colonColor;
 IPAddress ip_addr;
 

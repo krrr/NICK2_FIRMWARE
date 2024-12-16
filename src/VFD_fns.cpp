@@ -18,8 +18,8 @@ void IRAM_ATTR shiftSetValue(uint8_t pin, bool value) {
 */
 void IRAM_ATTR shiftWriteBytes(volatile byte *data) {
 
-  for (int i = 0; i < bytesToShift; i++) {
-    SPICustom.transfer(data[bytesToShift - 1 - i]);
+  for (int i = 0; i < BYTES_TO_SHIFT; i++) {
+    SPICustom.transfer(data[BYTES_TO_SHIFT - 1 - i]);
   }
 
   // set gpio through register manipulation, fast!
@@ -317,12 +317,14 @@ void toggleNightMode() {
   }
 }
 
+uint8_t healIterator;
+
 void healingCycle() {
   strip.ClearTo(RgbColor(0, 0, 0));
   strip.Show();
   for (int i = 0; i < DIGITS_COUNT; i++) {
     setDigit(i, healPattern[i][healIterator]);
-  }
-  healIterator++;
-  if (healIterator > 9) healIterator = 0;
+    }
+    healIterator++;
+    if (healIterator > 9) healIterator = 0;
 }
