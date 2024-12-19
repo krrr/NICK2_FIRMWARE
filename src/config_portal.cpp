@@ -237,6 +237,7 @@ void startServer() {
   server.on("/set", handleDiyHueSet);
   //server.on("/switch", handleDiyHueSwitch);
   server.on("/get", handleDiyHueGet);
+  server.on("/heal", handleHeal);
 
   server.onNotFound(handleNotFound);
   server.begin();
@@ -253,6 +254,14 @@ void handleDiyHueGet() {
   if (bri == 2) diyhueBri = 255;
   String power_status = isPoweredOn ? "true" : "false";
   server.send(200, "text/plain", "{\"on\": " + power_status + ", \"bri\": " + String(diyhueBri) + "}");
+}
+
+void handleHeal() {
+  blankAllDigits();
+  for (int i = 0; i < 10; i++) {
+    healingCycle();
+  }
+  server.send(200, "text/plain", "healing completed");
 }
 
 void handleDiyHueSet() {
@@ -675,7 +684,7 @@ void handleRoot() {
     html += ">10min cycle every hour between 2-6 AM + 60s cycle every hour (recommended)</option>";
     html += "<option value=\"3\"";
     if (cathode == 3) html += " selected";
-    html += ">60s cycle every half an hour</option>";
+    html += ">10s cycle every 2 minute</option>";
     html += "</select></div>";
 
 

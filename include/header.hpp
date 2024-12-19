@@ -183,5 +183,6 @@ void handleDiyHueSet();
 void handleNotFound();
 void handleJson();
 void handleDiyHueGet();
+void handleHeal();
 
 #endif // GLOBAL_H

@@ -249,12 +249,12 @@ const uint8_t dimmingSteps = 2;
 
 // Cathode poisoning prevention pattern --> circle through least used digits, prioritize number 7
 uint8_t healPattern[6][10] = {
-  {0, 6, 9, 3, 4, 5, 6, 7, 8, 9},
   {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-  {7, 3, 4, 7, 5, 6, 7, 8, 7, 9},
-  {4, 5, 6, 7, 8, 9, 6, 7, 8, 9},
+  {1, 2, 3, 4, 5, 6, 7, 8, 9, 0},
+  {2, 3, 4, 5, 6, 7, 8, 9, 0, 1},
+  {3, 4, 5, 6, 7, 8, 9, 0, 1, 2},
   {6, 7, 8, 7, 9, 6, 7, 8, 9, 7},
-  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+  {1, 6, 2, 7, 5, 0, 4, 9, 8, 3}
 };
 
 // MAX BRIGHTNESS PER DIGIT
@@ -270,7 +270,7 @@ uint8_t bri_vals_separate[3][6] = {
 
 // Better left alone global vars
 volatile bool isPoweredOn = true;
-unsigned long configStartMillis, prevDisplayMillis;
+unsigned long configStartMillis, prevDisplayMillis = 0;
 // volatile int activeDot;
 uint8_t deviceMode = NORMAL_MODE;
 bool timeUpdateFirst = true;
@@ -436,8 +436,9 @@ void loop() {
     return;
   }
 
-  if (millis() - prevDisplayMillis >= 1000) { //update the display only if time has changed
-    prevDisplayMillis = millis();
+  auto millis_ = millis();
+  if (millis_ - prevDisplayMillis >= 1000) {  // update the display only if time has changed
+    prevDisplayMillis = millis_;
     toggleNightMode();
 
     int cathode = json["cathode"].as<int>();
@@ -445,7 +446,7 @@ void loop() {
     if (
       (cathode == 1 && (hour(now_t) >= 2 && hour(now_t) <= 6) && minute(now_t) < 10) ||
       (cathode == 2 && (((hour(now_t) >= 2 && hour(now_t) <= 6) && minute(now_t) < 10) || minute(now_t) < 1)) ||
-      (cathode == 3 && (minute(now_t) < 1 || (minute(now_t) >= 30 && minute(now_t) < 31)))
+      (cathode == 3 && (minute(now_t) % 2 == 0 && second(now_t) < 10))
     ) {
       healingCycle();  // do healing loop if the time is right :)
     } else {
@@ -465,25 +466,6 @@ void loop() {
       handleColon();
       showTime();
     }
-
-    //setAllDigitsTo(8);
-
-    /*
-        int i = 0;
-        for (;;) {
-          i++;
-          if (i > 9) i = 0;
-          Serial.println(i);
-          setDigit(0, i);
-          setDigit(1, i);
-          setDigit(2, i);
-          setDigit(3, i);
-          setDigit(4, i);
-          setDigit(5, i);
-          delay(2000);
-        }
-    */
-
   }
 
   animations.UpdateAnimations();

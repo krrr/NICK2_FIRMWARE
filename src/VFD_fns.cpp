@@ -94,8 +94,7 @@ void IRAM_ATTR TimerHandler()
   ) {
     // set gpio through register manipulation, fast!
     GPOS = 1 << COLON_PIN;
-  }
-  else {
+  } else {
     GPOC = 1 << COLON_PIN;
   }
 
@@ -266,7 +265,7 @@ void cycleDigits() {
 }
 
 void showIP(int delay_ms) {
-  IPAddress ip_addr = WiFi.localIP();
+  auto ip_addr = WiFi.localIP();
 
   blankAllDigits();
 
@@ -317,14 +316,16 @@ void toggleNightMode() {
   }
 }
 
-uint8_t healIterator;
-
 void healingCycle() {
   strip.ClearTo(RgbColor(0, 0, 0));
   strip.Show();
-  for (int i = 0; i < DIGITS_COUNT; i++) {
-    setDigit(i, healPattern[i][healIterator]);
+  auto temp = crossFadeTime;
+  crossFadeTime = 0;  // temporarily disable
+  for (int i = 0; i < 10; i++) {
+    for (int d = 0; d < DIGITS_COUNT; d++) {
+      setDigit(d, healPattern[d][i]);
     }
-    healIterator++;
-    if (healIterator > 9) healIterator = 0;
+    if (i < 9) delay(100);
+  }
+  crossFadeTime = temp;
 }
