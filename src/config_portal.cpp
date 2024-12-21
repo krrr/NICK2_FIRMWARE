@@ -331,16 +331,15 @@ void handleNotFound() {
 void handleJson() {
   auto temp = JsonDocument(json);
   temp["pass"] = "***";
-  String html;
-  serializeJson(temp, html);
-  server.send(200, "text/json", html);
+  String str;
+  serializeJson(temp, str);
+  server.send(200, "application/json", str);
 }
 
 void handleRoot() {
   unsigned long serverProcessingTime = millis();
 
   if (server.args()) {
-
     if (server.hasArg("is_form")) {
       updateColonColor(blue[bri]);
       strip_show();

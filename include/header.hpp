@@ -37,7 +37,7 @@
 
 // ONLY CHANGE DEFINES BELOW IF YOU KNOW WHAT YOU'RE DOING!
 #define NORMAL_MODE 0
-#define OTA_MODE 1
+// #define OTA_MODE 1
 #define CONFIG_MODE 2
 #define CONFIG_MODE_LOCAL 3
 #define CONNECTION_FAIL 4
@@ -75,7 +75,7 @@ extern ESP8266HTTPUpdateServer httpUpdateServer;
 extern RgbColor currentColor;
 extern NeoGamma<NeoGammaTableMethod> colorGamma;
 extern NeoPixelAnimator animations;
-extern const int dotsAnimationSteps;
+// extern const int dotsAnimationSteps;
 extern HsbColor red[];
 extern HsbColor blue[];
 extern HsbColor green[];

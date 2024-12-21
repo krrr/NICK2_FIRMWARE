@@ -23,7 +23,7 @@ const char* update_username = "nick2";
 const char* update_password = "nick2";
 const char* ntpServerName = "pool.ntp.org";
 
-const int dotsAnimationSteps = 2000; // dotsAnimationSteps * TIMER_INTERVAL_uS = one animation cycle time in microseconds
+// const int dotsAnimationSteps = 2000; // dotsAnimationSteps * TIMER_INTERVAL_uS = one animation cycle time in microseconds
 
 
 HsbColor red[] = {
@@ -247,14 +247,14 @@ volatile uint8_t shiftedDutyState[DIGITS_COUNT];
 const uint8_t pwmResolution = 64; // should be in the multiples of dimmingSteps to enable smooth crossfade
 const uint8_t dimmingSteps = 2;
 
-// Cathode poisoning prevention pattern --> circle through least used digits, prioritize number 7
+// Cathode poisoning prevention pattern
 uint8_t healPattern[6][10] = {
   {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+  {4, 5, 6, 7, 8, 9, 0, 1, 2, 3},
   {1, 2, 3, 4, 5, 6, 7, 8, 9, 0},
-  {2, 3, 4, 5, 6, 7, 8, 9, 0, 1},
   {3, 4, 5, 6, 7, 8, 9, 0, 1, 2},
-  {6, 7, 8, 7, 9, 6, 7, 8, 9, 7},
-  {1, 6, 2, 7, 5, 0, 4, 9, 8, 3}
+  {6, 7, 8, 7, 9, 6, 7, 8, 9, 7},  // special
+  {2, 3, 4, 5, 6, 7, 8, 9, 0, 1},
 };
 
 // MAX BRIGHTNESS PER DIGIT
@@ -278,7 +278,7 @@ volatile bool toggleSeconds;
 // bool breatheState;
 byte mac[6];
 // volatile int dutyState = 0;
-//volatile uint8_t digitsCache[] = {0, 0, 0, 0};
+// volatile uint8_t digitsCache[] = {0, 0, 0, 0};
 volatile byte bytes[BYTES_TO_SHIFT];
 // volatile byte prevBytes[BYTES_TO_SHIFT];
 volatile uint8_t bri = 0;
