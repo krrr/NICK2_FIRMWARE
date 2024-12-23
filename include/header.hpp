@@ -39,8 +39,7 @@
 #define NORMAL_MODE 0
 // #define OTA_MODE 1
 #define CONFIG_MODE 2
-#define CONFIG_MODE_LOCAL 3
-#define CONNECTION_FAIL 4
+// #define CONFIG_MODE_LOCAL 3
 #define UPDATE_SUCCESS 1
 #define UPDATE_FAIL 2
 #define DATA 13

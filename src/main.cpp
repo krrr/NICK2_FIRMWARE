@@ -366,7 +366,7 @@ void setup() {
 
     int wifi_timeout = json["wifi_timeout"].as<int>();
     if (wifi_timeout < 10 || wifi_timeout > 360) {
-      wifi_timeout = 10;  // defult 20s timeout
+      wifi_timeout = 20;  // defult 20s timeout
     }
     wifi_timeout *= 10;
     for (int i = 0; ; i++) {
@@ -399,7 +399,7 @@ void setup() {
 
   Serial.println("[SYS] FreeSketchSpace: " + String(ESP.getFreeSketchSpace() / 1024) + "KB");
 
-  if (deviceMode == CONFIG_MODE || deviceMode == CONNECTION_FAIL) {
+  if (deviceMode == CONFIG_MODE) {
     startConfigPortal(); // Blocking loop
   } else {
     ndp_setup();
@@ -428,7 +428,7 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
-  if (timeUpdateFirst == true && timeUpdateStatus == UPDATE_FAIL || deviceMode == CONNECTION_FAIL) {
+  if (timeUpdateFirst == true && timeUpdateStatus == UPDATE_FAIL) {
     setAllDigitsTo(0);
     updateColonColor(red[bri]); // red
     strip_show();

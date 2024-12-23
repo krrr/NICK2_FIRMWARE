@@ -181,19 +181,17 @@ void startConfigPortal() {
   unsigned int lastTest = 0;
 
   while (deviceMode == CONFIG_MODE) { // BLOCKING INFINITE LOOP
-
     time_t remainingSeconds = (CONFIG_TIMEOUT - (millis() - configStartMillis)) / 1000;
 
     if (millis() - configStartMillis > CONFIG_TIMEOUT) {
       WiFi.softAPdisconnect(true);
-      //WiFi.mode(WIFI_STA);
-      deviceMode = CONNECTION_FAIL;
+      ESP.restart();
+      delay(100);
       return;
     }
 
     if (millis() - lastTest > 1000) {
       int splitTime[] = {
-
 #ifdef CLOCK_6_DIGIT
         (hour(remainingSeconds) / 10) % 10,
         hour(remainingSeconds) % 10,
@@ -269,20 +267,17 @@ void handleDiyHueSet() {
     if (server.argName(i) == "on") {
       if (server.arg(i) == "True" || server.arg(i) == "true") {
         isPoweredOn = true;
-      }
-      else {
+      } else {
         isPoweredOn = false;
       }
-    }
-    else if (server.argName(i) == "bri" || server.argName(i) == "bri_inc") {
+    } else if (server.argName(i) == "bri" || server.argName(i) == "bri_inc") {
       isPoweredOn = true;
       if (server.arg(i).toInt() != 0) {
         if (server.arg(i).toInt() < 85) bri = 0;
         else if (server.arg(i).toInt() < 170) bri = 1;
         else bri = 2;
       }
-    }
-    else if (server.argName(i) == "alert" && server.arg(i) == "select") {
+    } else if (server.argName(i) == "alert" && server.arg(i) == "select") {
       if (isPoweredOn) {
         bri = 0;
       } else {
@@ -330,14 +325,14 @@ void handleNotFound() {
 
 void handleJson() {
   auto temp = JsonDocument(json);
-  temp["pass"] = "***";
+  temp["pass"] = "***";  // hide wifi password
   String str;
   serializeJson(temp, str);
   server.send(200, "application/json", str);
 }
 
 void handleRoot() {
-  unsigned long serverProcessingTime = millis();
+  auto serverProcessingTime = millis();
 
   if (server.args()) {
     if (server.hasArg("is_form")) {
