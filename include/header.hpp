@@ -32,7 +32,7 @@
 
 #define AP_NAME "NICK2_"
 #define FW_NAME "Nick2_Fork"
-#define FW_VERSION "1.0.0"
+#define FW_VERSION "1.0.1"
 #define CONFIG_TIMEOUT 300000 // 300000 = 5 minutes
 
 // ONLY CHANGE DEFINES BELOW IF YOU KNOW WHAT YOU'RE DOING!

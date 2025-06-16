@@ -33,8 +33,7 @@ void sendNTPpacket(IPAddress &address)
 }
 
 
-time_t getNtpTime()
-{
+time_t getNtpTime() {
   IPAddress ntpServerIP; // NTP server's ip address
 
   while (Udp.parsePacket() > 0)
@@ -57,41 +56,35 @@ time_t getNtpTime()
   Serial.println(ntpServerIP);
   sendNTPpacket(ntpServerIP);
   uint32_t beginWait = millis();
-  while (millis() - beginWait < 1500)
-  {
+  while (millis() - beginWait < 1500) {
     int size = Udp.parsePacket();
-    if (size >= NTP_PACKET_SIZE)
-    {
+    if (size >= NTP_PACKET_SIZE) {
       Serial.println("[NTP] Receiving data...");
-      Udp.read(packetBuffer, NTP_PACKET_SIZE); // read packet into the buffer
-      unsigned long secsSince1900;
+      Udp.read(packetBuffer, NTP_PACKET_SIZE);
       // convert four bytes starting at location 40 to a long integer
-      secsSince1900 = (unsigned long)packetBuffer[40] << 24;
+      auto secsSince1900 = (unsigned long)packetBuffer[40] << 24;
       secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
       secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
       secsSince1900 |= (unsigned long)packetBuffer[43];
 
       return secsSince1900 - 2208988800UL;
     }
+    delay(10);
   }
 
   Serial.println("[NTP] Server not responding...");
-  return 0; // return 0 if unable to get the time
+  return 0;  // return 0 if unable to get the time
 }
 
-time_t getNtpLocalTime()
-{
-  int retries = 3;
+time_t getNtpLocalTime() {
   int iterator = 0;
   time_t receivedTime = 0;
 
-  while (iterator < retries && receivedTime == 0)
-  {
+  while (iterator < 3 && receivedTime == 0) {
     receivedTime = getNtpTime();
     iterator++;
   }
-  if (receivedTime == 0)
-  {
+  if (receivedTime == 0) {
     timeUpdateStatus = UPDATE_FAIL;
     failedAttempts += 1;
     Serial.print("[NTP] Sync failed. Attempt: ");
