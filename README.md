@@ -2,6 +2,8 @@
 ====
 https://github.com/mcer12/Nick2-Nixie-Clock
 
+![front view](other/front-view.jpg)
+
 改动
 ====
 - Arduino更改为PlatformIO编译
