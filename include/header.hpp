@@ -105,7 +105,6 @@ extern volatile bool isPoweredOn;
 extern unsigned long configStartMillis, prevDisplayMillis;
 // extern volatile int activeDot;
 extern uint8_t deviceMode;
-extern bool timeUpdateFirst;
 extern volatile bool toggleSeconds;
 // extern bool breatheState;
 extern byte mac[];
@@ -116,6 +115,7 @@ extern volatile uint8_t bri;
 extern volatile int crossFadeTime;
 extern volatile uint8_t fadeIterator;
 extern uint8_t timeUpdateStatus;
+extern unsigned long timeUpdateLastTime;
 extern uint8_t failedAttempts;
 extern volatile bool enableDotsAnimation;
 // extern volatile unsigned short dotsAnimationState;
@@ -134,6 +134,7 @@ boolean isIp(String str);
 
 ////////////// ntp fns
 void ndp_setup();
+void ntp_cancel();
 time_t getNtpTime();
 time_t getNtpLocalTime();
 //////////////

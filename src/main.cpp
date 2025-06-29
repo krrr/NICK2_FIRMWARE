@@ -273,7 +273,6 @@ volatile bool isPoweredOn = true;
 unsigned long configStartMillis, prevDisplayMillis = 0;
 // volatile int activeDot;
 uint8_t deviceMode = NORMAL_MODE;
-bool timeUpdateFirst = true;
 volatile bool toggleSeconds;
 // bool breatheState;
 byte mac[6];
@@ -285,6 +284,7 @@ volatile uint8_t bri = 0;
 volatile int crossFadeTime = 0;
 volatile uint8_t fadeIterator;
 uint8_t timeUpdateStatus = 0; // 0 = no update, 1 = update success, 2 = update fail,
+unsigned long timeUpdateLastTime = 0;  // store the time when NTP was last updated
 uint8_t failedAttempts = 0;
 volatile bool enableDotsAnimation;
 // volatile unsigned short dotsAnimationState;
@@ -428,7 +428,7 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
-  if (timeUpdateFirst == true && timeUpdateStatus == UPDATE_FAIL) {
+  if (timeUpdateLastTime == 0 && timeUpdateStatus == UPDATE_FAIL) {
     setAllDigitsTo(0);
     updateColonColor(red[bri]); // red
     strip_show();
@@ -466,6 +466,13 @@ void loop() {
       handleColon();
       showTime();
     }
+  }
+
+  // Offline mode: disconnect WiFi after NTP update and 5 minutes
+  if (WiFi.status() == WL_CONNECTED && json["offline_mode"].as<int>() == 1 && (millis_ - timeUpdateLastTime) >= 300000) { // 300000 ms = 5 minutes
+    Serial.println("[WIFI] Offline mode enabled: Disconnecting WiFi.");
+    ntp_cancel();
+    WiFi.disconnect(true);
   }
 
   animations.UpdateAnimations();

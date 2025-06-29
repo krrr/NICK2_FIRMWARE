@@ -460,6 +460,9 @@ void handleRoot() {
     if (server.hasArg("dst_hour")) {
       json["dst_hour"] = server.arg("dst_hour");
     }
+    if (server.hasArg("offline_mode")) {
+      json["offline_mode"] = server.arg("offline_mode");
+    }
     saveConfig();
   }
 
@@ -488,6 +491,14 @@ void handleRoot() {
     int wifi_timeout = json["wifi_timeout"].as<int>();
     if (wifi_timeout == 0) wifi_timeout = 20;
     html += String(wifi_timeout) + "\"> </div>";
+
+    html += "<div class=\"row\"><label for=\"offline_mode\">";
+    html += "<input type=\"checkbox\" id=\"offline_mode\" name=\"offline_mode\" value=\"1\"";
+    if (json["offline_mode"].as<int>() == 1) {
+      html += " checked=\"checked\"";
+    }
+    html += ">&nbsp;Offline Mode (disconnect WiFi after NTP update and 5 minutes)</label></div>";
+
     /*
         html += "\"> </div> <h2>Static IP settings (optional)</h2> <p>Optional settings for static IP, in some cases this might speed up response time. All 3 need to be set and IP should be reserved in router's DHCP settings.";
         html += "<br>MAC address: <span class=\"mac\">";

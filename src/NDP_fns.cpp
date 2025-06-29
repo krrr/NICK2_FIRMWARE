@@ -93,8 +93,8 @@ time_t getNtpLocalTime() {
   }
   Serial.print("[NTP] Sync success! Received NTP timestamp: ");
   Serial.println(receivedTime);
-  timeUpdateFirst = false;
   timeUpdateStatus = UPDATE_SUCCESS;
+  timeUpdateLastTime = millis();
   failedAttempts = 0;
 
   return TZ.toLocal(receivedTime);
@@ -114,4 +114,9 @@ void ndp_setup() {
   Udp.begin(localPort);
   setSyncProvider(getNtpLocalTime);
   setSyncInterval(3600);
+}
+
+void ntp_cancel() {
+  setSyncInterval(0);
+  setSyncProvider(NULL);
 }
